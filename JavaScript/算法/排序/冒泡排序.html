@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冒泡排序</title>
+</head>
+<body>
+    <script>
+        /**
+         * 冒泡排序的思路：
+         * 1、对未排序的各元素从头到尾依次比较相邻的两个元素大小关系
+         * 2、如果左边的大，则两元素交换位置，
+         * 3、向右移动一个位置，比较下两个元素，
+         * 4、当走到最右端，最大的元素一定被放在了最右边，
+         * 5、按照这个思路，从最左端重新开始，这次走到倒数第二个位置的元素即可
+         * 6、以此类推，就可以将数据排序完成
+         */
+        //  封装ArrayList
+        function ArrayList() {
+            this.array = [];
+
+            ArrayList.prototype.insert = function(item) {
+                this.array.push(item);
+            }
+
+            ArrayList.prototype.toString = function() {
+                return this.array.join('-');
+            }
+            //  交换两个数据的位置
+            ArrayList.prototype.swap = function(m, n) {
+                var temp = this.array[m];
+                this.array[m] = this.array[n];
+                this.array[n] = temp;
+            }
+
+            // 实现冒泡排序
+            ArrayList.prototype.bubbleSort = function() {
+                // 1、获取数组的长度
+                var length = this.array.length;
+                
+                // 第一次：j = length - 1, 比较到倒数第一个位置
+                // 第二次：j = length - 2, 比较到倒数第二个位置
+                // ...
+                for (var j = length - 1; j >= 0; j--) {
+                    // 第一次进来：i = 0；比较0 和 1位置的两个数据，如果0位置大于1位置的数据
+                    // 最后一次进来： i = length - 2,比较length - 2 和 length - 1
+                    for (var i = 0; i < j; i++) {
+                        if (this.array[i] > this.array[i + 1]) {
+                            this.swap(i, i+1)
+                        }
+                    }
+                }
+            }
+        }
+
+        // 初始化数据项
+        var list = new ArrayList();
+
+        list.insert(2);
+        list.insert(10);
+        list.insert(7);
+        list.insert(4);
+        list.insert(5);
+        list.insert(1);
+
+        list.bubbleSort();
+        alert(list);
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单向链表</title>
+</head>
+<body>
+    <script>
+        /**
+         * 链表的优势：
+         * —— 要存储多个元素，另一个选择就是链表。
+         * —— 但不同于数组，链表中的元素在内存中不必是连续的空间。
+         * —— 链表的每个元素由一个存储元素本身的节点和一个指向下一个元素
+         *      的引用（有些语言称为指针或者连接）组成。
+         * 
+         * 相对于数组，链表的优点
+         * —— 内存空间不是必须连续的，可以充分利用计算机的内存，实现灵活的
+         *      内存动态管理。
+         * —— 链表不必在创建时就确定大小，并且大小可以无限的延伸下去。
+         * —— 链表在插入和删除数据时，时间复杂度可以达到O(1),相对数组效率
+         *      高很多。
+         * 
+         * 相对于数组，链表的缺点：
+         * —— 链表访问任何一个位置的元素时，都需要从头开始访问。（无法跳过
+         *      第一个元素访问任何一个元素）。
+         * —— 无法通过下标直接访问元素，需要从头一个个访问，知道找到对应的
+         *      元素。
+         * 
+         * 什么是链表？
+         * —— 
+         * 
+         * 单向链表
+         * —— 只能从头遍历到尾或者从尾遍历到头(一般从头到尾)
+         * —— 也就是链表相连的过程是单向的。
+         * —— 实现的原理是上一个链表中有一个指向下一个的引用。
+         * 
+         * 单向链表的缺点
+         * —— 可以轻松的到达下一个节点，但是回到前一个节点是很难的。
+         * —— 经常要使用回到上一节点的情况
+         */
+
+        // 封装链表类
+        function LinkedList() {
+            // 内部节点类
+            function Node(data) {
+                this.data = data;
+                this.next = null;
+            }
+            // 属性
+            this.head = null;
+            this.length = 0;
+
+            // 1、append(element)方法 
+            // 向列表尾部添加一个新的项
+            LinkedList.prototype.append = function(data) {
+                // 1、创建新节点
+                var node = new Node(data);
+                // 2.判断添加的是否是第一个节点
+                if (this.length == 0) { // 2.1 第一个节点
+                    this.head = node;
+                } else { // 不是第一个节点
+                    // 找到最后一个节点
+                    var current = this.head;
+                    while (current.next) {
+                        current = current.next;
+                    }
+                    // 最后节点的next指向新的节点
+                    current.next = node;
+                }
+
+                // 3、length+1
+                this.length += 1;
+            };
+            // 2.toString方法
+            // 输出元素的字符串形式的值
+            LinkedList.prototype.toString = function() {
+                // 1、定义变量
+                var current = this.head;
+                var listString = '';
+
+                // 2、循环获取一个个节点
+                while(current) {
+                    listString += current.data + ' ';
+                    current = current.next;
+                }
+                return listString;
+            };
+            // 3.insert(position, element) 方法
+            // 向列表的特定位置插入一个新的项
+            LinkedList.prototype.insert = function(position, data) {
+                // 1.对position进行越界判断
+                // 不能传负数,超出现有个数
+                if (position < 0 || position > this.length) return false;
+
+                // 2、根据data创建新节点
+                var node = new Node(data);
+
+                // 3、判断插入的位置是否是第一个
+                if (position == 0) {
+                    node.next = this.head;
+                    this.head = node;
+                } else {
+                    var index = 0;
+                    var current = this.head; 
+                    var previous = null;
+                    while (index++ < position) {
+                        previous = current;
+                        current = current.next;
+                    }
+                    node.next = current;
+                    previous.next = node;
+                }
+                // 4、length+1
+                this.length += 1;
+
+                return true;
+            }
+            // 4.get(position) 方法
+            // 获取对应位置的元素
+            LinkedList.prototype.get = function(position) {
+                // 1.越界判断 
+                if (position < 0 || position >= this.length) return null;
+
+                // 2.获取对应的data
+                var current = this.head;
+                var index = 0;
+                while (index++ < position) {
+                    current = current.next;
+                }
+
+                return current.data;
+            }
+            // 5.indexOf(element) 方法
+            // 返回元素在列表中的索引，如果列表没有该元素则返回-1
+            LinkedList.prototype.indexOf = function(data) {
+                // 1.定义变量
+                var current = this.head;
+                var index = 0;
+
+                // 2、开始查找
+                while(current) {
+                    if(current.data == data) {
+                        return index;
+                    }
+                    current = current.next;
+                    index += 1;
+                }
+
+                // 3.找到最后没有找到，返回-1
+                return -1;
+            }
+            // 6.update(position, element) 方法
+            // 修改某个位置的元素
+            LinkedList.prototype.update = function(position, data) {
+                // 1.越界判断 
+                if (position < 0 || position >= this.length) return false;
+
+                // 查找正确节点
+                var current = this.head;
+                var index = 0;
+                while (index++ < position) {
+                    current = current.next;
+                }
+
+                // 3.将position位置的node的data修改为data
+                current.data = data;
+                
+                return true;
+            }
+            // 7.removeAt(position)
+            // 从列表的特定位置移除一项
+            LinkedList.prototype.removeAt = function(position) {
+                // 1.越界判断 
+                if (position < 0 || position >= this.length) return null;
+                
+                // 2.判断是否删除第一个节点
+                var current = this.head;
+                if (position == 0) {
+                    this.head = this.head.next;
+                } else {
+                    var index = 0;
+                    
+                    var previous = null;
+                    while (index++ < position) {
+                        previous = current;
+                        current = current.next;
+                    }
+                    // 前一个节点的next指向，current的next即可
+                    previous.next = current.next;
+                }
+                // 3.length-1
+                this.length -= 1;
+
+                return current.data;
+            }
+            // 8.remove(element)
+            // 从列表中移除一项
+            LinkedList.prototype.remove = function(data) {
+                // 1.获取data在列表中的位置
+                var position = this.indexOf(data);
+                // 根据位置信息，删除节点
+                return this.removeAt(position)
+            }
+            // 9.isEmpty()
+            // 如果链表中不包含任何元素，返回true,如果链表长度大于0则返回false
+            LinkedList.prototype.isEmpty = function() {
+                return this.length == 0;
+            }
+            // 10.size()
+            // 返回链表包含的元素个数
+            LinkedList.prototype.size = function() {
+                return this.length;
+            }
+        }
+
+        // 测试
+        var list = new LinkedList();
+        // 测试append
+        list.append('abc');
+        list.append('cba');
+        list.append('nba');
+        // console.dir(list);
+        // console.log(list.toString())
+        // 测试insert
+        list.insert(0, 'aaa');
+        list.insert(3, 'bbb');
+        list.insert(5, 'ccc');
+        // console.log(list.toString());
+
+        // 测试get
+        // console.log(list.get(0));
+        // console.log(list.get(3));
+        // console.log(list.get(5));
+
+        // 测试indexOf
+        // console.log(list.indexOf('aaa'));
+        // console.log(list.indexOf('eee'));
+
+        // 测试update
+        list.update(0, 'mmm');
+        list.update(3, 'nnn');
+        // console.log(list.toString());
+
+        // 测试remoteAt
+        list.removeAt(0)
+        // console.log(list.toString());
+        list.removeAt(3);
+        // console.log(list.toString());
+
+        // 测试remote
+        list.remove('nnn');
+        // console.log(list.toString());
+        // console.log(list.remove('eeee'));
+        
+        // 测试isEmpty
+        // console.log(list.isEmpty())
+
+        // 测试size()
+        // console.log(list.size())
+
+    </script>
+</body>
+</html>

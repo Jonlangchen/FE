@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        Vue.createApp({
+            template: `
+                <h1 v-show="isShow">{{ msg }}</h1>
+                <button @click="handler">点我反转</button>
+                <button @click="handler2">显示与隐藏</button>
+                <input type="text" v-model="inputValue"/>
+                <button @click="handler3">添加</button>
+                <ul>
+                    <li v-for="(item, index) in list" :key="index">{{item}}</li>
+                </ul>
+            `,
+            data() {
+                return {
+                    msg: 'Hello Vue',
+                    isShow: true,
+                    list: [],
+                    inputValue: ''
+                }
+            },
+            methods: {
+                handler() {
+                    this.msg = this.msg.split('').reverse().join('');
+                },
+                handler2() {
+                    this.isShow = !this.isShow
+                },
+                handler3() {
+                    this.list.push(this.inputValue)
+                    this.inputValue = ''
+                }
+            }
+        }).mount('#root')
+
+
+        // Vue.createApp({
+        //     data() {
+        //         return {
+        //             count: 0
+        //         }
+        //     },
+        //     template: '<h1>{{ count }}</h1>',
+        //     mounted() {
+        //         setInterval(() => {
+        //             this.count += 1;
+        //         }, 1000)
+        //     }
+        // }).mount('#root')
+
+        // Vue.createApp({
+        //     template: '<h1>{{ count }}</h1>',
+        //     data() {
+        //         return {
+        //             count: 0
+        //         }
+        //     },
+        //     mounted() {
+        //         setInterval(() => {
+        //             this.count += 1
+        //         }, 1000)
+        //     }
+        // }).mount('#root')
+    </script>
+</body>
+</html>

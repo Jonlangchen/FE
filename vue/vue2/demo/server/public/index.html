@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">跨域请求按钮</button>
+
+    <script>
+        // 处理回调的数据
+        function dataFn(_d) {
+            console.log(_d)
+        }
+        let _btn = document.getElementById('btn');
+        let _url = 'http://localhost:3002/get_data?func=dataFn';
+
+        _btn.onclick = () => {
+            // console.log('xxx')
+            let _script = document.createElement('script');
+            _script.setAttribute('src', _url);
+            _script.setAttribute('type', 'text/javascript')
+            document.getElementsByTagName('body')[0].appendChild(_script);
+        }
+    </script>
+</body>
+</html>

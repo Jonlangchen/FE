@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双向链表</title>
+</head>
+<body>
+    <script>
+        /**
+         * 双向链表
+         * —— 既可以从头遍历到尾，又可以从尾遍历到头
+         * —— 也就是链表相连的过程是双向的。
+         * —— 一个节点既有向前连接的引用，也有一个向后连接的引用。
+         * —— 双向链表可以有效的解决单向链表中提到的问题。
+         * 
+         * 双向链表的缺点：
+         * —— 每次在插入或删除某个节点时，需要处理四个引用，而不是两个，
+         *      也就是实现起来困难些
+         * —— 并且相当于单项链表，必然占用内存空间更大一些
+         * 
+         * 双向链表的特点：
+         * —— 可以使用一个head和一个tail分别指向头部和尾部的节点
+         * —— 每个节点都由三部分组成：前一个节点的指针(prev)/保存的元素(item)/
+         *      后一个节点的指针(next)
+         * —— 双向链表的第一个节点的prev是null
+         * —— 双向链表的最后的节点的next是null
+         */
+
+        // 封装双向链表
+        function DoublyLinkedList() {
+            // 内部类，节点类
+            function Node(data) {
+                this.data = data;
+                this.prev = null;
+                this.next = null;
+            }
+            // 属性
+            this.head = null;
+            this.tail = null;
+            this.length = 0;
+
+            // 常用方法
+            // append(element)
+            // 向列表尾部添加一个新的项
+            DoublyLinkedList.prototype.append = function(data) {
+                // 1.根据data创建节点
+                var node = new Node(data);
+
+                // 2、判断添加的是否是第一个节点
+                if(this.length == 0) {
+                    this.head = node;
+                    this.tail = node;
+                } else {
+                    node.prev = this.tail;
+                    this.tail.next = node;
+                    this.tail = node;
+                }
+
+                // 3.length+1
+                this.length += 1;
+            }
+
+            // 将链表转成字符串形式
+            // 2.1toString()
+            DoublyLinkedList.prototype.toString = function() {
+                return this.backwardString();
+            }
+
+            // 2.2 forwardString()
+            // 返回正向遍历的节点字符串形式
+            DoublyLinkedList.prototype.forwardString = function() {
+                // 1.定义变量
+                var current = this.tail;
+                var resultString = '';
+
+                // 2.依次向前遍历,获取每一个节点
+                while (current) {
+                    resultString += current.data + ' ';
+                    current = current.prev;
+                }
+                return resultString;
+            }
+
+            // 2.3 backwardString()
+            // 返回反向遍历的节点字符串形式
+            DoublyLinkedList.prototype.backwardString = function() {
+                // 1.定义变量
+                var current = this.head;
+                var resultString = '';
+
+                // 2.依次向后遍历,获取每一个节点
+                while (current) {
+                    resultString += current.data + ' ';
+                    current = current.next;
+                }
+
+                return resultString;
+            }
+
+            // insert(position, element)
+            // 向列表的特定位置插入一个新的项
+            DoublyLinkedList.prototype.insert = function(position, data) {
+                // 1. 越界判断
+                if (position < 0 || position > this.length) return false;
+
+                // 2.根据data创建新的节点
+                var node = new Node(data);
+
+                // 3. 判断原来的链表是否为空
+                if (this.length == 0) {
+                    this.head = node;
+                    thi.tail = node;
+                } else {
+                    // 3.1 判断position是否为0
+                    if (position == 0) {
+                        this.head.prev = node;
+                        node.next = this.head
+                        this.head = node;
+                    } else if (position == this.length) {
+                        node.prev = this.tail;
+                        this.tail.next = node;
+                        this.tail = node;
+                    } else {
+                        var current = this.head;
+                        var index = 0;
+
+                        while (index++ < position) {
+                            current = current.next;
+                        }
+                        // 修改指针
+                        node.next = current;
+                        node.prev = current.prev;
+                        current.prev.next = node;
+                        current.prev = node;
+                    }
+                }
+
+                // 4. length+1
+                this.length += 1;
+
+                return true;
+            }
+
+            // get(position)
+            // 获取对应位置的元素
+            DoublyLinkedList.prototype.get = function() {
+                // 1. 越界判断
+                if (position < 0 || position > this.length) return null;
+
+                // this.length / 2 > position: 从头向后遍历
+                // this.length / 2 < position: 从后向前遍历
+
+                // 2.获取元素
+                var current = this.head;
+                var index = 0;
+
+                while (index++ < position) {
+                    current = current.next;
+                }
+                return current.data;
+            }
+
+            // indexOf(element) 
+            // 返回元素在列表中的索引，如果列表中没有该元素则返回-1
+            DoublyLinkedList.prototype.indexOf = function() {
+
+            }
+
+            // update(position, element)
+            // 修改某个位置的元素
+            DoublyLinkedList.prototype.update = function() {
+
+            }
+
+            // removeAt(position)
+            // 从列表的特定位置移除一项
+            DoublyLinkedList.prototype.removeAt = function() {
+
+            }
+
+            // remove(element)
+            // 从列表中移除一项
+            DoublyLinkedList.prototype.remove = function() {
+
+            }
+
+            // isEmpty()
+            // 如果链表中不包含任何元素，返回true，如果链表长度大于0则返回false
+            DoublyLinkedList.prototype.isEmpty = function() {
+
+            }
+
+            // size()
+            // 返回链表包含的元素个数
+            DoublyLinkedList.prototype.size = function() {
+
+            }
+        }
+
+        // 测试 
+        var dll = new DoublyLinkedList();
+
+        // 测试append
+        dll.append('abc');
+        dll.append('cba');
+        dll.append('nba');
+
+        // console.log(dll);
+        // console.log(dll.backwardString());
+        // console.log(dll.forwardString());
+
+        // 测试insert
+        dll.insert(0, 'aaa');
+        dll.insert(4, 'bbb');
+        dll.insert(2, 'ccc');
+        console.log(dll.backwardString());
+    </script>
+</body>
+</html>

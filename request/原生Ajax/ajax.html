@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- ============= 1 ============ -->
+    <!-- <div style="width: 200px;height: 200px;background-color: red;">
+        <div id="hema">hippo is best</div>
+        <button onclick="change('hippo.php')">change</button>
+    </div> -->
+
+    <!-- ============= 2 ============ -->
+    <!-- <button id="btn" onclick="handler('demo01.txt')">获取</button> -->
+    <!-- <span id="showText"></span> -->
+
+    <!-- ============= 4 ============ -->
+    <button id="look">点击查看数据</button>
+    <ul id="list">
+
+    </ul>
+    <script>
+        // ================= 6 ==================
+        (function() {
+            window.$request = {
+                createAjax(type, url, params = null) {
+                    let ajax = new XMLHttpRequest();
+                    ajax.open(type, url, true);
+                    ajax.setRequestHeader('Content-Type', 'application/json');
+                    ajax.send(params); // 兼容性 传递null
+                    return ajax;
+                },
+                // 地址 回调
+                getPromise(url = '') { // 同步方式调用
+                    return new Promise((resolve, reject) => {
+                        let ajax = this.createAjax('GET', url);
+                        this.getResult(ajax, resolve, reject);
+                    }) 
+                },
+                // 地址 请求体 回调
+                postPromise(url = '', params = {}) {
+                    return new Promise((resolve, reject) => {
+                        let ajax = this.createAjax('POST', url, JSON.stringify(params));
+                        this.getResult(ajax, resolve, reject);
+                    })
+                },
+                getResult(ajax, resolve, reject) {
+                    ajax.onload = function () {
+                        // 成功的回调
+                        // 只有服务器状态码是200的时候，才会真正成功
+                        if (ajax.status === 200) {
+                            try {
+                                resolve(JSON.parse(ajax.responseText))
+                            } catch (e) {
+                                reject(e) // 解析json数据报错的时候
+                            }
+                        } else {
+                            reject(e)
+                        }
+                    };
+                    ajax.onerror = function () {
+                        // 失败的回调
+                        reject('出错了');
+                    }
+                }
+            }
+        })();
+
+        // 调用
+        async function get(url) {
+            let res = $request.getPromise(url);
+        }
+
+
+
+
+        // ================= 5 ==================
+        (function() {
+            window.$request = {
+                createAjax(type, url) {
+                    let ajax = new XMLHttpRequest();
+                    ajax.open(type, url, true);
+                    return ajax;
+                },
+                // 地址 回调
+                get(url, fn) {
+                    let ajax = this.createAjax('GET', url);
+                    ajax.send(null); // 兼容性 传递null
+                    ajax.onreadystatechange = function () {
+                        if (ajax.readyState === 4) {
+                            fn && fn(JSON.parse(ajax.responseText), ajax);
+                        }
+                    }
+                },
+                // 地址 请求体 回调
+                post(url, params, fn) {
+                    let ajax = this.createAjax('POST', url);
+                    // ajax.send(JSON.stringify(params));
+                    // 将当前的数据以json的形式发送过去
+                    ajax.setRequestHeader('Content-Type', 'application/json'); // 设置请求头
+                    ajax.send(JSON.stringify(params));
+                    ajax.onreadystatechange = function () {
+                        if (ajax.readyState === 4) {
+                            // 回调： 传过来的函数 执行的时候 回传过去一些参数
+                            fn && fn(JSON.parse(ajax.responseText), ajax);
+                        }
+                    }
+                }
+            }
+        })();
+
+
+
+
+        // ================= 4 ==================
+        document.getElementById('look').onclick=function() {
+            // 多次点击，要先清空内容
+            document.getElementById('list').innerHTML = '';
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', 'data.json', true);
+            xhr.send();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        console.log(xhr.responseText);
+                        // 把字符转转为对象 JSON.parse()
+                        var obj = JSON.parse(xhr.responseText)
+                        console.log(obj)
+                        var arr = obj.data;
+                        arr.forEach((item) => {
+                            var li = document.createElement('li');
+                            li.innerHTML = '<strong>'+ item.name + '</strong><p>'+ item.desc +'</p>';
+                            document.getElementById('list').appendChild(li)
+                        })
+                    }
+                }
+            }
+        }
+
+        // document.getElementById('look').onclick = function() {
+        //     document.getElementById('list') = innerHTML = '';
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('get', 'data.json', true);
+        //     xhr.send();
+        //     xhr.onreadystatechange = function() {
+        //         if (xhr.readyState == 4) {
+        //             if (xhr.status == 200) {
+        //                 var obj  = JSON.parse(xhr.responseText);
+        //                 var arr = obj.data;
+        //                 arr.forEach((item) => {
+        //                     var li = document.createElement('li');
+        //                     li.innerHTML = '<strong>'+ item.name + '</strong><p>'+ item.desc +'</p>';
+        //                     document.getElementById('list').appendChild(li)
+        //                 })
+        //             }
+        //         }
+        //     }
+        // }
+
+        // ================= 3 ==================
+        // 创建 xhr 对象
+        // var xhr = new XMLHttpRequest(); // ie7+
+        // // 2、准备发送想 xhr.open('请求方式get/post', 'url地址'，boolean) 默认boolean true异步请求
+        // xhr.open('get', 'demo01.txt', true);
+        // // 3、发送 send() get请求send()内容空 get参数传递-地址栏传递
+        // xhr.send();
+        // // 4、监听函数
+        // // 备注：函数功能：监听当前的ajax请求，进行到哪一步 仅仅听的时候只有响应数据才能渲染数据
+        // xhr.onreadystatechange = function () {
+        //     // 状态改变
+        //     if (xhr.readyState === 4) { // 响应数据
+        //         if (xhr.status === 200) { // http协议状态 200成功 404资源不存在
+        //             console.log(xhr.responseText) //返回的数据字符串格式
+        //         }
+        //     }
+        // }
+
+
+
+
+
+
+
+
+        // ================= 2 ==================
+        let handler = (url) => {
+            // 1、创建浏览器请求对象
+            let xhr;
+            try {
+                // IE7+, firefox, Chrome, Opera, Safari 浏览器执行代码
+                xhr = new XMLHttpRequest();
+            } catch (error) {
+                // IE6、 IE5 浏览器执行代码
+            }
+
+            // 2、建立连接
+            // 参数格式：请求方式，请求url，是否异步
+            xhr.open('GET', url, true);
+
+            // 3、发送数据
+            // 兼容早期的火狐浏览器，在没有数据发送的时候需要传递一个参数null
+            xhr.send(null);
+
+            // 4、服务端响应
+            //  0 —— 未建立连接
+            //  1 —— 连接建立
+            //  2 —— 发送数据
+            //  3 —— 服务器处理
+            //  4 —— 服务器响应
+            xhr.onreadystatechange = function () {
+                // responseText 纯文本数据  
+                // responseXML  xml格式数据 json
+                // status http状态码
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let showText = document.getElementById('showText');
+                        showText.innerHTML = xhr.responseText;
+                    } else {
+                        window.console.log('服务器丢失了')
+                    }
+                    
+                    
+                }
+            }
+        }
+
+
+
+        // function handler(url) {
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('get', url);
+        //     xhr.send();
+        //     xhr.onreadystatechange = function() {
+        //         if(xhr.readyState === 4 && xhr.status === 200) {
+        //         var showText = document.getElementById('showText');
+        //         showText.innerHTML = xhr.responseText
+        //         }
+        //     }
+        // }
+
+
+        // ================= 1 ==================
+        // var hema = document.getElementById('hema');
+        // var xmlhttp;
+        // function change(url) {
+        //     xmlhttp = new XMLHttpRequest();
+        //     /**
+        //      * get：请求方式
+        //      * url：气球地址
+        //      * true：是否开启异步
+        //      */
+        //      xmlhttp.open('get', url, true);
+        //      xmlhttp.send();
+        //     xmlhttp.onreadystatechange = state_change;
+        // }
+
+        // function state_change() {
+        //     if(xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        //         console.log(xmlhttp.responseText)
+        //         hema.innerHTML = xmlhttp.responseText;
+        //         hema.innerHTML = xmlhttp.status;
+        //     }
+        // }
+    </script>
+</body>
+</html>

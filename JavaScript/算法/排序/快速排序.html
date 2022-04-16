@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速排序</title>
+</head>
+<body>
+    <script>
+        /**
+         * 快速排序的重要性
+         * 1、大多数情况下，快速排序还是比较好选择。
+         * 2、快速排序可以说是排序算法中最常见的。
+         * 
+         * 快速排序是冒泡排序的升级版：
+         * 1、冒泡排序需要经过很多次交换，才能在依次循环中，将最大值放在正确的位置。
+         * 2、而快速排序可以在依次循环中(递归调用)，找出某个元素的正确位置，并且该
+         * 元素之后不需要任何移动。
+         * 
+         * 快速排序最重要的思想是分而治之
+         * 
+         * 快速排序的枢纽
+         * 在快速排序中有一个很重要的步骤就是选取枢纽(pivot也有人称为主元)
+         * 
+         * 1、一种方案是直接选择第一个元素作为枢纽
+         * 但第一个作为枢纽在某些情况下，效率并不是特别高
+         * 
+         * 2、另一种方案是使用随机数：
+         * 随机取 pivot? 但是随机函数本身就是一个耗性能的操作
+         * 
+         * 3、另一种比较优秀的解决方案： 取头、中、尾的中位数
+         * 例如8、12、3的中位数就是8
+         */
+
+         function ArrayList() {
+             this.array = [];
+
+             ArrayList.prototype.insert = function(item) {
+                 this.array.push(item);
+             }
+
+             ArrayList.prototype.toString = function() {
+                 return this.array.join('-');
+             }
+
+             ArrayList.prototype.swap = function(m, n) {
+                 var temp = this.array[m];
+                 this.array[m] = this.array[n];
+                 this.array[n] = temp;
+             }
+
+            //  快速排序
+            // 1、选择枢纽
+             ArrayList.prototype.median = function (left, right) {
+                //  1、取中间的位置
+                var center = Math.floor((left + right) / 2);
+                // 2、判断大小，并且交换位置
+                if (this.array[left] > this.array[center]) {
+                    this.swap(left, center);
+                } 
+                if (this.array[center] > this.array[right]) {
+                    this.swap(center, right);
+                }
+                if (this.array[left] > this.array[right]) {
+                    this.swap(left, right);
+                }
+
+                // 3、将center换到right - 1的位置
+                this.swap(center, right - 1);
+                return this.array[right - 1];
+             }
+            //  2、快速排序的实现
+            ArrayList.prototype.quickSort = function() {
+                this.quick(0, this.array.length - 1);
+            }
+
+            ArrayList.prototype.quick = function(left, right) {
+                // 1、结束条件
+                if (left >= right) return;
+
+                // 2、获取枢纽
+                var pivot = this.median(left, right);
+
+                // 3、定义变量，用于记录找到的位置
+                var i = left;
+                var j = right - 1;
+
+                // 4、开始进行交换
+                while (true) {
+                    while (this.array[++i] < pivot) {}
+                    while (this.array[--j] > pivot) {}
+                    if (i < j) {
+                        this.swap(i, j)
+                    } else {
+                        break;
+                    }
+                }
+                // 6、将枢纽放置在正确的位置，i的位置
+                this.swap(i, right -1);
+                // 7、分而治之
+                this.quick(left, i - 1);
+                this.quick(i + 1, right);
+            }
+         }
+    </script>
+</body>
+</html>

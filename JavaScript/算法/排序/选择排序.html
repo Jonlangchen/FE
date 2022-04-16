@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择排序</title>
+</head>
+<body>
+    <script>
+        /**
+         * 选择排序
+         * 1、选定第一个索引位置，然后和后面元素依次比较
+         * 2、如果后面的元素，小于第一个索引位置的元素，则交换位置
+         * 3、经过一轮比较后，可以确定第一个位置是最小的
+         * 4、然后使用同样的方法把剩下的元素逐个比较即可
+         * 5、可以看出选择排序，第一轮会选出最小值，第二轮会选出第二小的值，直到最后
+         */ 
+
+         function ArrayList() {
+             this.array = [];
+
+             ArrayList.prototype.insert = function(item) {
+                 this.array.push(item);
+             }
+
+             ArrayList.prototype.toString = function() {
+                 return this.array.join('-');
+             }
+
+             ArrayList.prototype.swap = function(m, n) {
+                 var temp = this.array[m];
+                 this.array[m] = this.array[n];
+                 this.array[n] = temp;
+             }
+
+             ArrayList.prototype.selectionSort = function() {
+                var length = this.array.length;
+
+                // 从0位置开始取数据
+                for (var j = 0; j < length - 1; j++) {
+                    // 从i+1开始，和后面是数据进行比较
+                    var min = j;
+                    for (var i = min + 1; i < length; i++) {
+                        if (this.array[min] > this.array[i]) {
+                            min  = i;
+                        }
+                    }
+                    this.swap(min, j);
+                }
+             }
+         }
+
+         var list = new ArrayList();
+         list.insert(8);
+         list.insert(9);
+         list.insert(2);
+         list.insert(6);
+         list.insert(5);
+         list.insert(1);
+
+         console.dir(list);
+         list.selectionSort();
+         console.log(list.array);
+    </script>
+</body>
+</html>

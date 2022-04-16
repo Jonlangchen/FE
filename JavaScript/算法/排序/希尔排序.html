@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>希尔排序</title>
+</head>
+<body>
+    <script>
+        /**
+         * 选择合适的增量：
+         * 1、初始间距为 N/2，简单的把没糖排序分成两半；
+         * 2、也就是说，对于N=100的数组，增量间隔序列为：50，25，12，6， 3， 1
+         * 3、这个方法的好像处是不需要在开始排序前为找合适的增量而进行任何的计算
+         * 
+         * Hibbard 增量序列
+         * 1、增量的算法为2^k-1。也就是为1、3、5、7等等
+         * 这种增量的的最坏复杂度为O(N^3/2)
+         * 
+         * Sedgewick增量序列
+         * {1, 5, 19, 41, 109, ...}
+         * 这种增量的的最坏复杂度为O(N^4/3)，平均复杂度O(N^7/6)
+         */ 
+
+         function ArrayList() {
+             this.array = [];
+
+             ArrayList.prototype.insert = function(item) {
+                 this.array.push(item);
+             }
+
+             ArrayList.prototype.toString = function() {
+                 return this.array.join('-');
+             }
+             ArrayList.prototype.swap = function(m, n) {
+                 var temp = this.array[m];
+                 this.array[m] = this.array[n];
+                 this.array[n] = temp;
+             }
+             ArrayList.prototype.shellSort = function() {
+                //  1、获取数组长度
+                 var length = this.array.length;
+
+                //  2、初始化增量
+                var gap = Math.floor(length / 2);
+
+                // 3、while循环(gap不断减小)
+                while(gap >= 1) {
+                    // 4、以gap作为间隔，进行分组，对分组进行插入排序
+                    for(var i = gap; i < length; i++) {
+                        var temp = this.array[i];
+                        var j = i;
+                        while(this.array[j - gap] > temp && j > gap - 1) {
+                            this.array[j] = this.array[j - gap];
+                            j -= gap;
+                        }
+                        // 5,将位置的元素赋值temp
+                        this.array[j] = temp;
+                    }
+                    // 每次while循环后都重新计算新的间隔
+                    gap = Math.floor(gap / 2);
+                }
+             }
+         }
+    </script>
+</body>
+</html>

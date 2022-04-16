@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>封装优先队列</title>
+</head>
+<body>
+    <script>
+        /**
+         * 优先级队列特点：
+         * —— 优先级队列在插入一个元素的时候会考虑该数据的优先级。
+         * —— 和其他数据优先级进行比较
+         * —— 比较完成后，可以得出这个元素在队列中的正确的位置。
+         * —— 其他处理方式，和基本队列的处理方式一样。
+         * 
+         * 优先级队列主要考虑的问题：
+         * —— 每个元素不再只是一个数据，而且包含数据的优先级
+         * —— 在添加方式中，根据优先级放入正确的位置。
+         */
+
+        // 封装优先队列
+        function PriorityQueue() {
+            // 创建内部类
+            function QueueElement(element, priority) {
+                this.element = element;
+                this.priority = priority;
+            }
+
+            // 封装属性
+            this.items = [];
+
+            // 实现插入方法
+            PriorityQueue.prototype.enqueue = function(element, priority) {
+                // 1、创建QueueElement对象
+                var queueElement = new QueueElement(element, priority);
+
+                // 2、判断队列是否为空
+                if (this.items.length == 0) {
+                    this.items.push(queueElement)
+                } else {
+                    var added = false;
+                    for (var i = 0; i < this.items.length; i++) {
+                        if (queueElement.priority < this.items[i].priority) {
+                            this.items.splice(i, 0, queueElement);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if(!added) {
+                        this.items.push(queueElement);
+                    }
+                }
+            }
+            // 移除队列第一项，并返回被移除的元素(删除前端元素)
+            PriorityQueue.prototype.dequeue = function() {
+                return this.items.shift()
+            };
+            // 返回队列的第一个元素(查看前端元素)
+            PriorityQueue.prototype.front = function() {
+                return this.items[0]
+            };
+            // 队列是否为空
+            PriorityQueue.prototype.isEmpty = function() {
+                return this.items.length == 0
+            };
+            // 队列包含的个数
+            PriorityQueue.prototype.size =  function() {
+                return this.items.length;
+            };
+            // 队列内容的字符串形式
+            PriorityQueue.prototype.toString = function() {
+                var resultString = '';
+                for (var i = 0; i < this.items.length; i++) {
+                    resultString += this.items[i].element + '-' + this.items[i].priority + ' ';
+                }
+                return resultString;
+            }
+
+        }
+
+        // 测试
+        var pq = new PriorityQueue();
+        pq.enqueue('abc', 111);
+        pq.enqueue('cba', 200);
+        pq.enqueue('nba', 50);
+        pq.enqueue('nba', 66);
+        // console.log(pq);
+        alert(pq);
+    </script>
+</body>
+</html>
