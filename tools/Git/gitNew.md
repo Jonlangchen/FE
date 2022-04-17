@@ -509,3 +509,9 @@ git push origin master : 推送 master 到远程 origin 中
 
     解决方法：
         git config --global http.sslVerify true
+
+
+# Git报错解决：fatal: unable to access ‘https://github.com/.......‘: OpenSSL SSL_read: Connection was reset
+
+    解决方法：
+        git config --global http.sslVerify false
